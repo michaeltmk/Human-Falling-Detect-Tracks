@@ -1,0 +1,12 @@
+version: "3"
+services:
+  pytorch:
+    build: .
+    container_name: pytorch
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - 5000:5000
+    command: sh -c "sleep infinity"
+    # command: python3 main.py rtmp://139.99.62.231:6010/live/1jfiegbrv23ba_p0_YYXBDYBGKKJO
