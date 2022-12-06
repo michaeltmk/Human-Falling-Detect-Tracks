@@ -48,3 +48,9 @@ frames by hand for training ST-GCN model.
 
 - AlphaPose : https://github.com/Amanbhandula/AlphaPose
 - ST-GCN : https://github.com/yysijie/st-gcn
+
+## Run
+```bash
+xhost +local:docker
+docker-compose up
+```

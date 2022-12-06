@@ -6,7 +6,13 @@ services:
     restart: always
     volumes:
       - .:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix
     ports:
       - 5000:5000
+    environment:
+      - tz=Asia/Hong_Kong
+      - DISPLAY=${DISPLAY}
+      - CUDA_VISIBLE_DEVICES=""
     command: sh -c "sleep infinity"
-    # command: python3 main.py rtmp://139.99.62.231:6010/live/1jfiegbrv23ba_p0_YYXBDYBGKKJO
+    network_mode: host
+    command: python3 main.py --device cpu -C ${RTMP_URL}

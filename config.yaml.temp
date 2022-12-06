@@ -1,0 +1,4 @@
+telegram:
+  token: <tg bot token>
+  chat_id: <tg chat id>
+  cooldown: 60
