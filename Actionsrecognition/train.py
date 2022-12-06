@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
     del train_loader, valid_loader
 
-    model.load_state_dict(torch.load(os.path.join(save_folder, 'tsstg-model.pth')))
+    model.load_state_dict(torch.load(os.path.join(save_folder, 'tsstg-model.pth'),map_location=torch.device(device)))
 
     # EVALUATION.
     model = set_training(model, False)
