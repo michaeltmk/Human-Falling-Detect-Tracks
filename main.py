@@ -23,10 +23,14 @@ from tg_trigger.tg_trigger import TelegramTrigger
 source = '../Data/falldata/Home/Videos/video (1).avi'
 #source = 2
 
-# Load Telegram Trigger
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
+    # Load Telegram Trigger
     tg_trigger = TelegramTrigger(**config['telegram'])
+    # Load config
+    tsstg_config = config['tsstg']
+    yolo_config = config['yolo']
+
 
 def preproc(image):
     """preprocess function for CameraLoader.
@@ -69,7 +73,7 @@ if __name__ == '__main__':
 
     # DETECTION MODEL.
     inp_dets = args.detection_input_size
-    detect_model = TinyYOLOv3_onecls(inp_dets, device=device)
+    detect_model = TinyYOLOv3_onecls(inp_dets, device=device, **yolo_config)
 
     # POSE MODEL.
     inp_pose = args.pose_input_size.split('x')
@@ -156,8 +160,13 @@ if __name__ == '__main__':
             if len(track.keypoints_list) == 30:
                 pts = np.array(track.keypoints_list, dtype=np.float32)
                 out = action_model.predict(pts, frame.shape[:2])
-                action_name = action_model.class_names[out[0].argmax()]
-                action = '{}: {:.2f}%'.format(action_name, out[0].max() * 100)
+                if out[0].max() > tsstg_config['threshold']:
+                    action_name = action_model.class_names[out[0].argmax()]
+                    action = '{}: {:.2f}%'.format(action_name, out[0].max() * 100)
+                else:
+                    action_name = None
+                    action = None
+
                 if action_name == 'Fall Down':
                     clr = (255, 0, 0)
                     try:

@@ -54,3 +54,7 @@ frames by hand for training ST-GCN model.
 xhost +local:docker
 docker-compose up
 ```
+
+## TODO
+1. rtmp reload
+2. bug: sometimes the video is not playing, need to have health check and restart
