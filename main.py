@@ -4,6 +4,8 @@ import time
 import torch
 import argparse
 import numpy as np
+import threading
+import yaml
 
 from Detection.Utils import ResizePadding
 from CameraLoader import CamLoader, CamLoader_Q
@@ -15,11 +17,16 @@ from fn import draw_single
 from Track.Tracker import Detection, Tracker
 from ActionsEstLoader import TSSTG
 
+from tg_trigger.tg_trigger import TelegramTrigger
 #source = '../Data/test_video/test7.mp4'
 #source = '../Data/falldata/Home/Videos/video (2).avi'  # hard detect
 source = '../Data/falldata/Home/Videos/video (1).avi'
 #source = 2
 
+# Load Telegram Trigger
+with open('config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+    tg_trigger = TelegramTrigger(**config['telegram'])
 
 def preproc(image):
     """preprocess function for CameraLoader.
@@ -74,7 +81,7 @@ if __name__ == '__main__':
     tracker = Tracker(max_age=max_age, n_init=3)
 
     # Actions Estimate.
-    action_model = TSSTG()
+    action_model = TSSTG(device=device)
 
     resize_fn = ResizePadding(inp_dets, inp_dets)
 
@@ -153,6 +160,11 @@ if __name__ == '__main__':
                 action = '{}: {:.2f}%'.format(action_name, out[0].max() * 100)
                 if action_name == 'Fall Down':
                     clr = (255, 0, 0)
+                    try:
+                        tg_trigger.alert_trigger_gateway()
+                    
+                    except Exception as e:
+                        print(f'Error: fail to send alert, {e}')
                 elif action_name == 'Lying Down':
                     clr = (255, 200, 0)
 
