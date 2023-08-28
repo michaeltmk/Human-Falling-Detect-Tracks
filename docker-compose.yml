@@ -16,3 +16,4 @@ services:
     command: sh -c "sleep infinity"
     network_mode: host
     command: python3 main.py --device cpu -C ${RTMP_URL}
+    # command: python3 main.py --device cpu -C test/Child-Run-Swimming-Pool-Fall-Down-Jump-Gifs-Gif.gif
